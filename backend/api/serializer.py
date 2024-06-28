@@ -21,7 +21,7 @@ class RegiserSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(write_only = True, required=True)
     
     class Meta:
-        models = api_models.User
+        model = api_models.User 
         fields = ['full_name','email','password','password2']
         
     
@@ -31,14 +31,14 @@ class RegiserSerializer(serializers.ModelSerializer):
         return attr
     
     def create(self,validated_data):
-        user = api_models.User.objects.create_user(
+        user = api_models.User.objects.create(
             full_name=validated_data['full_name'],
             email=validated_data['email'],
         )
         email_usernanme,mobile = user.email.split("@")
         user.username =  email_usernanme
         
-        user.set_password(validate_password['password'])
+        user.set_password(validated_data['password'])
         user.save()
         
         return user
@@ -93,21 +93,23 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
-        model =  api_models.Post
-        fields ='__all__'
-    def __init__(self,*args, **kwargs):
-        super(PostSerializer,self).__init__(*args, **kwargs)  
-        request = self.context.get("request")
-        if request and request.method == "POST":
+        model = api_models.Post
+        fields = "__all__"
+    def __init__(self, *args, **kwargs):
+        super(PostSerializer, self).__init__(*args, **kwargs)
+        request = self.context.get('request')
+        if request and request.method == 'POST':
             self.Meta.depth = 0
         else:
-            self.Meta.depth = 1
+            self.Meta.depth = 3
+            
+            
 
 class BookmarkSerializer(serializers.ModelSerializer):
     class Meta:
         model =  api_models.Bookmark
         fields ='__all__'
-    def __init__(self,*args, **kwargs):
+    def __init__(self,*args, **kwargs): 
         super(BookmarkSerializer,self).__init__(*args, **kwargs)  
         request = self.context.get("request")
         if request and request.method == "POST":
