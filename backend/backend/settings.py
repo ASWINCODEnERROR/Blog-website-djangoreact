@@ -191,13 +191,13 @@ SIMPLE_JWT = {
 CORS_ALLOW_ALL_ORIGINS = True
 
 JAZZMIN_SETTINGS = {
-    "site_title": "Desphixs",
-    "site_header": "Desphixs",
+    "site_title": "Blog",
+    "site_header": "Blog",
     "site_brand": "Modern Marketplace ",
     # "site_icon": "images/favicon.ico",
     # "site_logo": "images/logos/logo.jpg",
-    "welcome_sign": "Welcome To Desphixs",
-    "copyright": "Desphixs",
+    "welcome_sign": "Welcome To aswin",
+    "copyright": "aswin",
     "user_avatar": "images/photos/logo.jpg",
     "topmenu_links": [
         {"name": "Dashboard", "url": "home", "permissions": ["auth.view_user"]},
