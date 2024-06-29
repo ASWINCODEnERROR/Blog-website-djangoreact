@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
-from django.db.models import Sum
+from django.db.models import Sum, Count 
 
 from rest_framework import status
 from rest_framework.decorators import api_view, APIView
@@ -199,3 +199,31 @@ class BookmarkPostAPIView(APIView):
             return Response({"message":"Bookmarked"}, status=status.HTTP_201_CREATED)
             
         
+
+class DashboardStats(generics.ListAPIView):
+    serializer_class = api_serializer.AuthorSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        user_id = self.kwargs['user_id']
+        user = api_models.User.objects.get(id=user_id)
+
+        views = api_models.Post.objects.filter(user=user).aggregate(view=Sum("view"))['view'] or 0
+        posts = api_models.Post.objects.filter(user=user).count()
+        likes = api_models.Post.objects.filter(user=user).aggregate(total_likes=Sum("likes"))['total_likes'] or 0
+        bookmarks = api_models.Bookmark.objects.filter(post__user=user).count()
+
+        return [{
+            "views": views,
+            "posts": posts,
+            "likes": likes,
+            "bookmarks": bookmarks,
+        }]
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)        
+        
+        
+  

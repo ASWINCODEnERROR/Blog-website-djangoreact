@@ -135,3 +135,4 @@ class AuthorSerializer(serializers.Serializer):
     post = serializers.IntegerField(default = 0)
     likes = serializers.IntegerField(default = 0)
     bookmarks = serializers.IntegerField(default = 0)
+    
